@@ -15,11 +15,11 @@
           </div>
           <div class="center">
             <p v-if="item.live" class="guest" :class="{end : item.isEnd}">{{item.live}}</p>
-            <p v-if="item.order" class="order">{{item.order}}</p>
-            <p class="score">
+            <p v-if="item.order" class="order" @click="subscribe">{{item.order}}</p>
+            <p class="score" :class="{last: item.isEnd}">
               {{item.hostScore}} - {{item.guestScore}}
             </p>
-            <p class="time">{{item.endTime}}</p>
+            <p v-if="!item.isEnd" class="time">{{item.endTime}}</p>
 
           </div>
           <div class="right-team">
@@ -33,60 +33,74 @@
 </template>
 
 <script>
-import List from 'common/data/match-list'
+import list from '../common/data/match-list'
+const UP = 'up'
+const DOWN = 'down'
+
 export default {
   name: 'match-list',
-  props: ['type', 'status'],
+  props: {
+    type: {
+      type: String,
+      default: 'soccer'
+    },
+    status: {
+      type: Number,
+      default: 1
+    }
+  },
   data () {
     return {
-      matchList: List[this.type][this.status],
+      matchList: list[this.type][this.status],
       options: {
         scrollbar: {
           fade: true
         },
         pullDownRefresh: {
           threshold: 90,
-          stop: 40,
+          stop: 50,
           txt: '刷新成功'
         },
         pullUpLoad: {
-          threshold: 100,
+          threshold: 0,
           txt: {
-            more: '加载成功',
+            more: '加载更多',
             noMore: '没有更多的比赛啦'
           }
         }
       }
     }
   },
+  watch: {
+    type () {
+      this.matchList = list[this.type][this.status]
+    }
+  },
+  created () {
+    this.subscribeDialog = this.$createSubscribeDialog()
+  },
   methods: {
+    subscribe () {
+      this.subscribeDialog.show()
+    },
     onPullingDown () {
+      this.loadMatch('down')
+    },
+    onPullingUp () {
+      this.loadMatch('up')
+    },
+    loadMatch (type) {
       setTimeout(() => {
         if (Math.random() > 0.5) {
           let match = []
           for (let index = 5; index > 0; index--) {
             match.push(this.matchList[index])
           }
-          this.matchList.unshift(...match)//扩展运算符（ spread ）是三个点（...）。它好比 rest 参数的逆运算，将一个数组转为用逗号分隔的参数序列
-          //var array = ["Java", true, "PHP"];
-
-          //var newLength = array.unshift("张三", "李四");
-
-         //document.writeln( array ); // 张三,李四,Java,true,PHP
-
-        } else {
-          this.$refs.scroll.forceUpdate()
-        }
-      }, 1000)
-    },
-    onPullingUp () {
-      setTimeout(() => {
-        if (Math.random() > 0.5) {
-          let match = []
-          for (let index = 5; index < 10; index++) {
-            match.push(this.matchList[index])
+          if (type === DOWN) {
+            this.matchList.unshift(...match)
+          } else if (type === UP) {
+            this.matchList = this.matchList.concat(match)
           }
-          this.matchList = this.matchList.concat(match)
         } else {
           this.$refs.scroll.forceUpdate()
         }
@@ -98,7 +112,7 @@ export default {
 
 <style lang="stylus">
 .match-list
-  height: 618px
+  height: 100%
   background-color: #E2E5EA
   .match-inner
     background-color: #FFFFFF
@@ -112,7 +126,6 @@ export default {
         width: 80px
         img
           display: inline-block
-          width: 38px
           height: 38px
           margin-bottom: 7px
         .name 
@@ -130,7 +143,8 @@ export default {
           margin-bottom: 7px
         .order
           display: inline-block
-          border:1px #2F6220 solid
+          border:1px #007100 solid
+          color: #49873D
           border-radius: 25px
           line-height: 16px
           padding: 3px 20px
@@ -142,6 +156,23 @@ export default {
           font-weight: 500
           margin-bottom: 7px
           position: relative
+          .order
+            display: inline-block
+            border-radius: 25px
+            border:1px #2F6220 solid
+            padding: 3px 20px
+            font-size: 100%
+            position: absolute
+            right: -100px
+            transform: translateY(-50%)
+        .last
+          font-size: 22px
+          margin-top: 5px
+          color: #878F98
         .time
           color: #92929A
+.before-trigger, .cube-pulldown-wrapper
+  color: #7D7D7D
+  font-size: 12px
+  line-height: 20px
 </style>
