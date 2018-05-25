@@ -2,7 +2,13 @@
 <template>
   <div id="app">
     <div class="header">
-      <h1 class="title" @click="showPicker">
+       <router-link tag="div" class="tab-item" to="/login">
+       		 <span class="tab-link">登录</span>
+        </router-link>
+
+     
+
+      <h1 class="title" @click="showPicker">    
         <span>全部赛事</span>
         <i class="cubeic-select" :class="{down: toDown}"></i>
       </h1>
@@ -32,6 +38,7 @@
         <div slot="dots"></div>
       </cube-slide>
     </div>
+   <router-view></router-view>
   </div>
 </template>
 
@@ -95,8 +102,17 @@ html, body, #app
 #app
   background-color: color_grey
   .header
+    position: relative
     color: white
     background-color: #15191D
+    .tab-item
+      position: absolute
+      top: 0
+      right: 0
+    .tab-link
+       display: block
+       padding: 15px
+       font-size: 15px
     .title
       padding: 20px 0
       font-size: 16px

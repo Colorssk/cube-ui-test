@@ -1,5 +1,6 @@
 
 import Vue from 'vue'
+import router from './router'
 // By default we import all the components.
 // Only reserve the components on demand and remove the rest.
 // Style is always required.
@@ -46,5 +47,6 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  router,
   render: h => h(App)
 })
