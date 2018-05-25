@@ -42,7 +42,7 @@ export default {
   name: 'app',
   data () {
     return {
-      currentPage: 1,
+      currentPage: 3,
       tabList: ['已结束', '直播中', '我的关注','视频'],
       toDown: false,
       pickerList: [

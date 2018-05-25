@@ -7,7 +7,7 @@
       :options="options"
       @pulling-down="onPullingDown"
       @pulling-up="onPullingUp">
-      <ul class="match-inner">
+      <ul v-if="flag" class="match-inner">
         <li v-for="(item, index) in matchList" :key="index" class="match-item">
           <div class="left-team">
             <img :src="item.hostLogoUrl" alt="" class="logo">
@@ -28,12 +28,18 @@
           </div>
         </li>
       </ul>
+      <ul v-if="!flag" calss="match-inner">
+      	<li>
+      		<myPlayer></myPlayer>
+      	</li>
+      </ul>
     </cube-scroll>
   </div>
 </template>
 
 <script>
 import list from '../common/data/match-list'
+import myPlayer from 'components/myPlayer/myPlayer'
 const UP = 'up'
 const DOWN = 'down'
 
@@ -68,18 +74,31 @@ export default {
             noMore: '没有更多的比赛啦'
           }
         }
-      }
+      },
+      flag:true
     }
   },
   watch: {
     type () {
       this.matchList = list[this.type][this.status]
     }
+  
   },
   created () {
     this.subscribeDialog = this.$createSubscribeDialog()
+    
+    this.flag = this.changeflag()
   },
   methods: {
+  	changeflag(){
+  		if(this.status === 3){
+  			console.log(666)
+  			return false
+  		}
+  		else{
+  			return true
+  		}
+  	},
     subscribe () {
       this.subscribeDialog.show()
     },
@@ -106,7 +125,10 @@ export default {
         }
       }, 1000)
     }
-  }
+  },
+      components: {
+             myPlayer
+    }
 }
 </script>
 
