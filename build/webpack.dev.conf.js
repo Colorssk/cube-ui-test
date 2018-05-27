@@ -8,6 +8,19 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
+const jsonServer = require('json-server')
+const aipServer = jsonServer.create()
+const apiRouter = jsonServer.router('mock-data.json') //此处的db.json是与package.json在同一目录下
+const middlewares = jsonServer.defaults()
+
+
+
+aipServer.use(middlewares)
+aipServer.use(apiRouter)
+aipServer.listen(3000, () => {
+  console.log('JSON Server is running')
+})
+
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 

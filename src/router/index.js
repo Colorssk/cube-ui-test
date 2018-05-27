@@ -11,6 +11,13 @@ import('components/login/login').then((module) => {
   })
 }
 
+const Main = (resolve) => {
+
+import('components/Main/Main').then((module) => {
+    resolve(module)
+  })
+}
+
 
 const App = (resolve) => {
 
@@ -33,6 +40,15 @@ export default new Router({
     {
         path: '/login',
         component: login
-    }
+    },
+	{
+		path: '/Main', 
+		meta: {
+			//meta元素
+			 requireAuth: true,  
+			},           
+			component: Main,
+
+	}
   ]
 })
